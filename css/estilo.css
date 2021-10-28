@@ -1,0 +1,78 @@
+body{
+    color: rgb(57, 33, 89);
+}
+
+#navbar{
+    background-color: rgb(57, 33, 89);
+    font-size: large;
+}
+@media (min-width: 434px) {
+    .navbar-collapse{
+        height: auto;
+        color: rgb(255, 255, 255);
+    background-color: rgb(57, 33, 89);
+    }  
+}
+  @media (min-width: 768px) {
+    .navbar-collapse{
+    background-color: unset;
+    }  
+}
+
+.navbar-toggler {
+    background: white;
+}
+
+.navbar-toggler:focus, .navbar-toggler:hover {
+    text-decoration: none;
+    background: white;
+}
+
+
+#item{
+    color: #fafafa;
+}
+.tabela {
+    margin-top: 7%;
+    padding-right: 5%;
+    padding-left: 5%;
+}
+.interno{
+    padding-right: 5%;
+    padding-left: 5%;
+}
+#minha_tabela{
+    color: rgb(57, 33, 89);
+}
+#editar{
+    margin-top: 10px;
+}
+#adicionar{
+    margin-top: 33px;
+    color: rgb(255, 255, 255);
+}
+.centro{
+    text-align: center;
+}
+.espaco{
+    margin-top: 200px;
+}
+.posicao{
+    position: center;
+}
+.botao{
+    margin-top: 50px;
+}
+.fundo{
+    background-image: url("../imagens/index.svg");
+    background-repeat:no-repeat;
+    -webkit-background-size:cover;
+    -moz-background-size:cover;
+    -o-background-size:cover;
+    background-size:cover;
+    background-position:center;
+}
+
+#rodape{
+    margin-top: 5%;
+}
