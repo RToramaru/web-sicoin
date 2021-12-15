@@ -1,13 +1,14 @@
 <?php
-
 require "../banco_dados/conecta.php";
-
-use Dompdf\Dompdf;
-require_once '../dompdf/autoload.inc.php';
+require "../vendor/autoload.php";
 
 
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord\Settings;
 
-
+$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor('modelo.docx');
+ 
 $tipo = $_POST['tipo'];
 $codigo = $_POST['codigo'];
 $produto = $_POST['produto'];
@@ -22,100 +23,52 @@ $setor_text = $setor == '' ? "3 = 3" : "destino = '$setor'";
 $inicio_text = $inicio == '' ? "4 = 4" : "emissao >= '$inicio'";
 $fim_text = $fim == '' ? "5 = 5" : "emissao <= '$fim'";
 
-
 $sql = "SELECT * FROM $tipo_text, $tipo WHERE $cod_text and $prod_text and $setor_text and $inicio_text and $fim_text and $tipo_text.codigo = $tipo.codigo";
 
 if($codigo != ''){
   $sql = "SELECT * FROM $tipo, $tipo_text WHERE $tipo_text.codigo = '$codigo'";
 }
 
-
 $resultado = mysqli_query($conn, $sql);
 $total = 0;
+$row = mysqli_num_rows($resultado);
+$templateProcessor->cloneRow('codigo', $row);
 
-$html = '<html>';
-$html .= '<head>';
-$html .= '<style>';
-$html .= 'table {--bs-table-bg:transparent;
-  --bs-table-accent-bg:transparent;
-  --bs-table-striped-color:#212529;
-  --bs-table-striped-bg:rgba(0, 0, 0, 0.05);
-  --bs-table-active-color:#212529;
-  --bs-table-active-bg:rgba(0, 0, 0, 0.1);
-  --bs-table-hover-color:#212529;
-  --bs-table-hover-bg:rgba(0, 0, 0, 0.075);
-  width:100%;
-  margin-bottom:1rem;
-  color:#212529;
-  vertical-align:top;
-  border-color:#dee2e6;
-  color: rgb(57, 33, 89);
-  margin-top: 7%;
-  padding-right: 5%;
-  padding-left: 5%;
-  text-align: center;
-  margin-top: 50px;
-  padding-right: 5%;
-  padding-left: 5%;
-  width:100%;
-  padding-right:var(--bs-gutter-x,.75rem);
-  padding-left:var(--bs-gutter-x,.75rem);
-  margin-right:auto;
-  margin-left:auto;
-  color: rgb(57, 33, 89);}
-  h3 {color: rgb(57, 33, 89);
-    float: right;
-    padding: 15px;
-  }
-  h1 {color: rgb(57, 33, 89);
-    text-align: center;}';
-$html .= '</style>';
-
-$html .= '</head>';
-$html .= '<body>';
-$html .= '<h1>SCPA - IFNMG</h1>';
-$html .= '<h1>Relatório</h1>';
-
-$html .= '<table>';
-$html .= '<thead>';
-$html .= '<tr>';
-$html .= '<th>Nota</th>';
-$html .= '<th>Setor de Origem</th>';
-$html .= '<th>Data de Emissão</th>';
-$html .= '<th>Produto</th>';
-$html .= '<th>Preço</th>';
-$html .= '<th>Quantidade</th>';
-$html .= '<th>Total</th>';
-$html .= '</tr>';
-$html .= '</thead>';
-$html .= '<tbody>';
-
+$count = 1;
 while($row = mysqli_fetch_assoc($resultado)){
-                
-    $html .= '<tr>';
-    $html .= '<td>'.$row['codigo'].'</td>';
-    $html .= '<td>'.$row['destino'].'</td>';
-    $html .= '<td>'.$row['emissao'].'</td>';
-    $html .= '<td>'.$row['produto'].'</td>';
-    $html .= '<td>'.$row['valor'].'</td>';
-    $html .= '<td>'.$row['quantidade'].'</td>';
-    $html .= '<td>'.($row['valor']*$row['quantidade']).'</td>';
-    $html .= '</tr>';
-    $total += ($row['valor']*$row['quantidade']);
+   
+  $templateProcessor->setValue('codigo#'.$count, $row['codigo']);
+  $templateProcessor->setValue('origem#'.$count, $row['destino']);
+  $templateProcessor->setValue('emissao#'.$count, $row['emissao']);
+  $templateProcessor->setValue('produto#'.$count, $row['produto']);
+  $templateProcessor->setValue('preco#'.$count, $row['valor']);
+  $templateProcessor->setValue('quantidade#'.$count, $row['quantidade']);
+  $templateProcessor->setValue('total#'.$count, $row['valor']*$row['quantidade']);
+  
+  $count += 1;
+  $total += ($row['valor']*$row['quantidade']);
 }
-$html .='</tbody>';
-$html .='</table>';
-$html .='<h3>Valor total:'.$total.'</h3>';
-$html .='</body>';
-$html .='</html>';
 
-$dompdf = new Dompdf();
-$dompdf->loadHtml($html);
+$templateProcessor->setValue('valor_total', $total);
+$templateProcessor->saveAs('modelo_.docx');
+
+
+$phpWord = \PhpOffice\PhpWord\IOFactory::load('modelo_.docx','Word2007');
+$objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'HTML');
+$objWriter->save('hello.html');
+$dompdf = new \Dompdf\Dompdf();
+$dompdf->load_html(file_get_contents('hello.html'));
 $dompdf->setPaper('A4', 'landscape');
 $dompdf->render();
-$dompdf->stream();
+$pdf_string = $dompdf->output();
+$dompdf->stream(
+  "form.pdf", 
+  array(
+    "Attachment" => false
+  )
+);
+file_put_contents('result2.pdf', $pdf_string);
 
 
-echo $html;
-?>
+//header('location:relatorio.php');
 

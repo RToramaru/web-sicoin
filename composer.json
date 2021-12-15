@@ -1,0 +1,8 @@
+{
+    "require": {
+        "dompdf/dompdf": "^1.1",
+        "phpoffice/phpword": "^0.18.2",
+        "fpdf/fpdf": "^1.83",
+        "tecnickcom/tcpdf": "^6.4"
+    }
+}
