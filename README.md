@@ -19,7 +19,7 @@ Para uso é necessário:
 
 ## Utilização
 
-A api permite:
+A aplicação permite:
 - Cadastrar os produtos
 - Cadastrar os usuarios
 - Cadastrar os setores
