@@ -5,6 +5,10 @@ O Sicoin é um sistema desenvolvido para o IFNMG - Campus Salinas para realizar 
 Seu funcionamento permite cadastrar Usuários, Produtos, Setores, Notas de Entrada, Notas de Saída, e Gerar Relatórios.
 Seu desenvolvimento foi feito utilizando o PHP na versão 8.0.
 
+### Tecnologias
+* PHP
+* MySQL
+
 ## Clone ou utilização do projeto
 
 Sua utilização pode ser realizada através de uma máquina local, para tal uso não é necessário nenhuma depêndencia instalada, apenas um servidor local, e ter o MySQL, uma vez que o mesmo utiliza de tal banco de dados.
@@ -26,3 +30,13 @@ A aplicação permite:
 - Cadastrar as notas de entrada
 - Cadastrar as notas de saida
 - Gerar relatórios
+
+
+## Demonstração
+
+![](/screens/1.png)
+![](/screens/2.png)
+![](/screens/3.png)
+![](/screens/4.png)
+![](/screens/5.png)
+![](/screens/6.png)
